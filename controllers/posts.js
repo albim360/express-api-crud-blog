@@ -50,9 +50,38 @@ function download(req, res) {
   }
 }
 
+// Funzione per l'eliminazione di un post
+function destroy(req, res) {
+  const slug = req.params.slug;
+  const postIndex = posts.findIndex((post) => post.slug === slug);
+
+  if (postIndex === -1) {
+    res.status(404).json({ message: 'Post non trovato' });
+    return;
+  }
+
+  const deletedPost = posts.splice(postIndex, 1)[0];
+  const json = JSON.stringify(posts);
+
+  if (deletedPost.image) {
+    const imagePath = path.resolve(__dirname, '../public/imgs/posts', deletedPost.image);
+    fs.unlinkSync(imagePath);
+  }
+
+  fs.writeFileSync(path.resolve(__dirname, '../db.json'), json);
+
+  if (req.accepts('html')) {
+    // Redirect in caso di richiesta HTML
+    res.redirect('/');  // Puoi cambiare il percorso a seconda delle tue esigenze
+  } else {
+    // Ritorna il testo di default in caso di richiesta diversa da HTML
+    res.send('Post eliminato');
+  }
+}
 module.exports = {
   index,
   show,
   create,
   download,
+  destroy
 };
