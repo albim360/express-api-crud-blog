@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 const homeController = require('./controllers/home');
 const postsController = require('./controllers/posts'); 
+const multer = require('multer');
 
 // Importa il router dei post
 const postRouter = require('./routers/posts'); 
@@ -10,6 +11,7 @@ const postRouter = require('./routers/posts');
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
 
 app.get("/", homeController.index);
 

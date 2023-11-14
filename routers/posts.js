@@ -6,18 +6,16 @@ const multer = require('multer');
 // index
 router.get('/', postsController.index);
 
-// create
-router.post('/', multer({ dest: 'public/imgs/posts' }).single('image'), postsController.create);
-router.get('/create', postsController.create);
+// store 
+router.post('/', multer({ dest: 'public/imgs/posts' }).single('image'), express.urlencoded({ extended: true }), postsController.store);
 
 // show
 router.get('/:slug', postsController.show);
 
+// download
+router.get('/:slug/download', postsController.download);
 
 // destroy
 router.delete('/:slug', postsController.destroy);
-
-// download
-router.get('/:slug/download', postsController.download);
 
 module.exports = router;
