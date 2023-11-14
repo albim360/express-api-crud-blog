@@ -6,9 +6,9 @@ const posts = require("../db");
 function index(req, res) {
   const postList = posts.map((post) => {
     return `<li>
-    <img src="/imgs/posts/${post.image}" style="max-height: 100px; max-width: 200px;">
-    <a href="/posts/${post.slug}">${post.title}</a>
-  </li>`;
+      <img src="/imgs/posts/${post.image}" style="max-height: 100px; max-width: 200px;">
+      <a href="/posts/${post.slug}">${post.title}</a>
+    </li>`;
   });
 
   const html = `<ul>${postList.join("")}</ul>`;
@@ -70,7 +70,7 @@ function destroy(req, res) {
 
   if (req.accepts("html")) {
     // Redirect in caso di richiesta HTML
-    res.redirect("/");
+    res.redirect("/posts");
   } else {
     // Ritorna il testo di default in caso di richiesta diversa da HTML
     res.send("Post eliminato");
@@ -103,12 +103,15 @@ function store(req, res) {
   const filePath = path.resolve(__dirname, "../db.json");
   fs.writeFileSync(filePath, json);
 
-  // Rispondi con JSON
+  // Rispondi con HTML
   if (req.accepts("html")) {
     // Redirect in caso di richiesta HTML
-    res.redirect("/");
-  } else {
+    res.redirect(`/posts/${slug}`);
+  } else if (req.accepts("json")) {
     res.json(newPost);
+  } else {
+    // Ritorna il testo di default in caso di richiesta diversa da HTML o JSON
+    res.send("Post creato");
   }
 }
 
